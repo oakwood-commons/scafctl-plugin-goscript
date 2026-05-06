@@ -44,6 +44,8 @@ resolvers:
 The script must define `func Run(input map[string]interface{}) (interface{}, error)`.
 `script` is required and `data` is optional.
 
+For this plugin, the most reliable CLI smoke test is to install it from the sample solution and run that solution end to end:
+
 ## Sample Solution
 
 A runnable example lives in `./examples/greeting/solution.yaml`. It feeds static input into the `goscript` provider during `resolve` and prints the result with the built-in `message` action.
@@ -61,6 +63,12 @@ Expected output is a small object with a greeting, uppercased language, and uppe
 task test
 
 task lint
+
+# publish current build to local catalog
+task release:local VERSION=0.1.0
+
+# create and push a signed git tag to trigger the release pipeline
+task release:tag VERSION=0.1.0
 ```
 
 ## Contributing

@@ -204,7 +204,9 @@ func dataFromInput(input map[string]any) (map[string]any, error) {
 
 func executeScript(script string, input map[string]any) (any, error) {
 	interpreter := interp.New(interp.Options{})
-	interpreter.Use(stdlib.Symbols)
+	if err := interpreter.Use(stdlib.Symbols); err != nil {
+		return nil, fmt.Errorf("load stdlib symbols: %w", err)
+	}
 
 	if _, err := interpreter.Eval(script); err != nil {
 		return nil, fmt.Errorf("evaluate script: %w", err)

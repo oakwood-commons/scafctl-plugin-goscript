@@ -4,6 +4,7 @@ vars:
   BINARY: scafctl-plugin-goscript
   DIST: "{{.ROOT_DIR | toSlash}}/dist"
   COVER: "{{.ROOT_DIR | toSlash}}/cover"
+  VERSION: '{{default "" .VERSION}}'
 
 tasks:
   default:
@@ -36,6 +37,27 @@ tasks:
         --name goscript
         --kind provider
         --version 0.1.0
+        --platform windows/amd64={{.DIST}}/{{.BINARY}}
+
+  release:tag:
+    desc: "Create and push a signed release tag (usage: task release:tag VERSION=0.1.1)"
+    requires:
+      vars: [VERSION]
+    cmds:
+      - git tag -s v{{.VERSION}} -m "v{{.VERSION}}"
+      - git push origin v{{.VERSION}}
+
+  release:local:
+    desc: "Publish the current binary to the local catalog with an explicit version (usage: task release:local VERSION=0.1.1)"
+    requires:
+      vars: [VERSION]
+    deps: [build]
+    cmds:
+      - >-
+        scafctl build plugin --force
+        --name goscript
+        --kind provider
+        --version {{.VERSION}}
         --platform windows/amd64={{.DIST}}/{{.BINARY}}
 
   test:
