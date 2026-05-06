@@ -1,0 +1,71 @@
+apiVersion: scafctl.io/v1
+kind: Solution
+metadata:
+  name: goscript-greeting
+  version: 0.1.0
+  description: Demonstrates the goscript provider by transforming static input data.
+
+bundle:
+  plugins:
+    - name: goscript
+      kind: provider
+      version: 0.1.0
+
+spec:
+  resolvers:
+    input:
+      description: Input object passed into the Go script.
+      resolve:
+        with:
+          - provider: static
+            inputs:
+              value:
+                name: gopher
+                language: go
+                topics:
+                  - plugins
+                  - automation
+
+    summary:
+      description: Output produced directly by the goscript provider.
+      resolve:
+        with:
+          - provider: goscript
+            inputs:
+              script: |
+                package main
+
+                import "strings"
+
+                func Run(input map[string]interface{}) (interface{}, error) {
+                 name, _ := input["name"].(string)
+                 language, _ := input["language"].(string)
+
+                 topicValues, _ := input["topics"].([]interface{})
+                 topics := make([]string, 0, len(topicValues))
+                 for _, topic := range topicValues {
+                  if value, ok := topic.(string); ok {
+                   topics = append(topics, strings.ToUpper(value))
+                  }
+                 }
+
+                 return map[string]interface{}{
+                  "message": "Hello, " + strings.ToUpper(name) + "!",
+                  "language": strings.ToUpper(language),
+                  "topics": topics,
+                 }, nil
+                }
+              data:
+                rslvr: input
+
+  workflow:
+    actions:
+      show-summary:
+        description: Print the transformed result.
+        provider: message
+        inputs:
+          type: success
+          label: goscript provider sample
+          format: yaml
+          data:
+            rslvr: summary
