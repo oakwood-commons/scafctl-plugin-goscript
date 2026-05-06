@@ -63,7 +63,7 @@ jobs:
           rm -rf "${TMP_DIR}"
 
       - name: Login to GitHub Container Registry
-        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+        run: echo "${{ secrets.CATALOG_PUSH_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
       - name: Download release archives
         env:
@@ -72,16 +72,6 @@ jobs:
           TAG="${GITHUB_REF#refs/tags/}"
           mkdir -p dist
           gh release download "${TAG}" --repo "${{ github.repository }}" --dir dist
-
-      - name: Authenticate scafctl for GHCR
-        env:
-          GH_TOKEN: ${{ secrets.CATALOG_PUSH_TOKEN != '' && secrets.CATALOG_PUSH_TOKEN || secrets.GITHUB_TOKEN }}
-        run: |
-          scafctl auth login github \
-            --force \
-            --flow pat \
-            --registry ghcr.io \
-            --write-registry-auth
 
       - name: Extract binaries from archives
         run: |
