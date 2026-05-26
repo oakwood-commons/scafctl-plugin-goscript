@@ -3,9 +3,9 @@ module github.com/oakwood-commons/scafctl-plugin-goscript
 go 1.26.2
 
 require (
-	github.com/Masterminds/semver/v3 v3.4.0
-	github.com/google/jsonschema-go v0.4.2
-	github.com/oakwood-commons/scafctl-plugin-sdk v0.1.1
+	github.com/Masterminds/semver/v3 v3.5.0
+	github.com/google/jsonschema-go v0.4.3
+	github.com/oakwood-commons/scafctl-plugin-sdk v0.4.0
 	github.com/stretchr/testify v1.11.1
 	github.com/traefik/yaegi v0.16.1
 )
